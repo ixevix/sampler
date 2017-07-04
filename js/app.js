@@ -1,5 +1,6 @@
 var SampleApp = {};
-var React, ReactDOM, createReactClass, rangeslider;
+var Samples = [];
+var React, ReactDOM, createReactClass, rangeslider, p5
 
 requirejs.config({
     baseUrl: 'js/'
@@ -13,28 +14,21 @@ require(['react'], function(react){
             ReactDOM = reactdom;
             require(['rangeslider'], function(rs){
                 rangeslider = rs;
-                SampleApp.initApp();
+                require(['p5'], function(pfive){
+                    p5 = pfive;
+                    require(['p5.sound'], function(pfs){
+                        p5.sound = pfs;
+                        SampleApp.initApp();
+                    });
+                });
             });
         });
     });
 });
 
 SampleApp.initApp = function(){
-    SampleApp.slider = createReactClass({
-        getInitialState(){
-            return { value: this.props.value }
-        },
-        componentDidMount(){
-            updateState = this.updateState;
-            $('#carrierFreq').rangeslider({polyfill: false, onSlide: function(p,e){updateState(e) }, onSlideEnd: function(p,e){updateState(e) }});
-        },
-        updateState(value){
-            console.log(value);
-        },
-        render(){
-            return React.createElement('input', { id: 'carrierFreq', type: 'range', min: 0, max: 44000, step: 1, value: this.state.value });
-        }
-    });
-    ReactDOM.render( React.createElement('div', {}, React.createElement(SampleApp.slider)), document.getElementById('root'));
+    sample = new Sample();
+    Samples.push(sample);
+    ReactDOM.render( React.createElement(sample.ui), document.getElementById('root'));
 }
 
