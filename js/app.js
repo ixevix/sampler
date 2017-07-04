@@ -28,7 +28,8 @@ require(['react'], function(react){
 
 SampleApp.initApp = function(){
     sample = new Sample();
+    sample2 = new Sample();
     Samples.push(sample);
-    ReactDOM.render( React.createElement(sample.ui), document.getElementById('root'));
+    ReactDOM.render( React.createElement('div', {}, [ React.createElement(sample.ui, { key: 's1', uniqId: 1 }), React.createElement(sample2.ui, { key: 's2', uniqId: 2 }) ]), document.getElementById('root'));
 }
 
