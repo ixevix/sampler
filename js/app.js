@@ -27,9 +27,32 @@ require(['react'], function(react){
 });
 
 SampleApp.initApp = function(){
-    sample = new Sample();
-    sample2 = new Sample();
-    Samples.push(sample);
-    ReactDOM.render( React.createElement('div', {}, [ React.createElement(sample.ui, { key: 's1', uniqId: 1 }), React.createElement(sample2.ui, { key: 's2', uniqId: 2 }) ]), document.getElementById('root'));
+    SampleApp.idCounter = 0;
+    SampleApp.addSampleButton = createReactClass({
+        clickHandler(){
+            SampleApp.addSample();
+            SampleApp.render();
+        },
+        render(){
+            return React.createElement('input', { type: 'button', value: 'Add sample', onClick: this.clickHandler });
+        }
+    });
+    SampleApp.addSample();
+    SampleApp.render();
+}
+
+SampleApp.addSample = function(){
+    Samples.push(React.createElement(new Sample().ui, { key: 's'+SampleApp.idCounter++, uniqId: SampleApp.idCounter++ }));
+}
+
+SampleApp.render = function(){
+    var renderarray = [];
+    renderarray.push(React.createElement(SampleApp.addSampleButton, { key: 'asbutton'}));
+    renderarray.push(React.createElement('br', {key: 'asbr1'}));
+    renderarray.push(React.createElement('br', {key: 'asbr2'}));
+    for ( var i = 0; i < Samples.length; i++ ) {
+        renderarray.push(Samples[i]);
+    }
+    ReactDOM.render( React.createElement('div', {}, renderarray ), document.getElementById('root'));
 }
 

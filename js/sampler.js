@@ -31,6 +31,27 @@ function Sample(args){
     this.carrier.connect(this.filter);
     this.filter.disconnect();
     var instance = this;
+    this.deleteButton = createReactClass({
+        getInitialState(){
+            this.vars = instance;
+            return {};
+        },
+        clickHandler(){
+            var newArray = [];
+            for ( var i = 0; i < Samples.length; i++ ) {
+                if ( this.vars.uniqId == Samples[i].props.uniqId ) {
+                    this.vars.carrier.disconnect();
+                } else {
+                    newArray.push(Samples[i]);
+                }
+            }
+            Samples = newArray.slice(0);
+            SampleApp.render();
+        },
+        render(){
+            return React.createElement('input', { key: 'delbutton', type: 'button', value: 'Delete', onClick: this.clickHandler });
+        }
+    });
     this.slider = createReactClass({
         getInitialState(){
             this.vars = instance;
@@ -55,7 +76,7 @@ function Sample(args){
         changeHandler(){
         },
         render(){
-            return React.createElement('input', { id: this.props.id, key: 'input'+Samples.length, type: 'range', min: this.props.min, max: this.props.max, step: this.props.step, value: this.state.value, onChange: this.changeHandler });
+            return React.createElement('input', { id: this.props.id, key: 'input'+this.props.uniqId, type: 'range', min: this.props.min, max: this.props.max, step: this.props.step, value: this.state.value, onChange: this.changeHandler });
         }
     });
     this.playButton = createReactClass({
@@ -140,6 +161,7 @@ function Sample(args){
     this.ui = createReactClass({
         getInitialState(){
             this.vars = instance;
+            this.vars.uniqId = this.props.uniqId;
             return {};
         },
         componentDidMount(){
@@ -183,6 +205,8 @@ function Sample(args){
         render() {
             return React.createElement('div', {}, [
                 React.createElement(this.vars.playButton, { defaultValue: 'Start', key: 'button1'} ),
+                React.createElement('span', { key: 'separator0' }, ' '),
+                React.createElement(this.vars.deleteButton, { key: 'deletebutton' }),
                 React.createElement('br', { key: 'br0' }),
                 React.createElement('br', { key: 'br1' }),
                 React.createElement(this.vars.waveformSelect, { id: 'carrierWaveForm'+this.props.uniqId, key: 'waveform1', ref: 'carrierWaveForm', defaultValue: this.vars.args.carrier.type }),
