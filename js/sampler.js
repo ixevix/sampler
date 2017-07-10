@@ -1,9 +1,11 @@
 function Sample(args){
     this.carrier = new p5.Oscillator();
     this.modulator = new p5.Oscillator();
+    this.filter = new p5.Filter();
     if ( typeof(args) === "undefined" ) {
         args = {};
         args.carrier = {};
+        args.filter = {};
         args.modulator = {};
         args.carrier.type = 'sine';
         args.modulator.type = 'sine';
@@ -11,6 +13,9 @@ function Sample(args){
         args.modulator.freq = 20;
         args.carrier.amp = 1;
         args.modulator.amp = 0;
+        args.filter.freq = 200;
+        args.filter.res = 50;
+        args.filter.type = 'lowpass';
     }
     this.args = args;
     this.carrier.setType(args.carrier.type);
@@ -22,6 +27,8 @@ function Sample(args){
     this.modulator.start();
     this.modulator.disconnect();
     this.carrier.freq(this.modulator);
+    this.carrier.connect(this.filter);
+    this.filter.disconnect();
     var instance = this;
     this.slider = createReactClass({
         getInitialState(){
@@ -38,6 +45,8 @@ function Sample(args){
                 this.vars.modulator.freq(value);
             } else if ( compvalue === 'modAmp' ) {
                 this.vars.modulator.amp(value);
+            } else if ( compvalue === 'filterFreq' ) {
+                this.vars.filter.freq(value);
             }
         },
         changeHandler(){
@@ -98,6 +107,33 @@ function Sample(args){
             ]);
         }
     });
+    this.filterSelect = createReactClass({
+        getInitialState(){
+            this.vars = instance;
+            return { value: this.props.defaultValue };
+        },
+        updateState(e){
+            if ( e.target.value === 'none' ) {
+                this.vars.filter.disconnect();
+            } else {
+                this.vars.filter.connect();
+                this.vars.filter.setType(e.target.value);
+            }
+            this.setState({ value: e.target.value });
+        },
+        render(){
+            return React.createElement('select', { id: this.props.id, value: this.state.value, onChange: this.updateState }, [
+                React.createElement('option', { key: 'nofilteroption', value: 'none'}, 'no filter'),
+                React.createElement('option', { key: 'lowpassoption', value: 'lowpass' }, 'lowpass'),
+                React.createElement('option', { key: 'highpassoption', value: 'highpass' }, 'highpass'),
+                React.createElement('option', { key: 'bandpassoption', value: 'bandpass' }, 'bandpass'),
+                React.createElement('option', { key: 'lowshelfoption', value: 'lowshelf' }, 'lowshelf'),
+                React.createElement('option', { key: 'highshelfoption', value: 'highshelf' }, 'highshelf'),
+                React.createElement('option', { key: 'peakingoption', value: 'peaking' }, 'peaking'),
+                React.createElement('option', { key: 'notchoption', value: 'notch' }, 'notch')
+            ]);
+        }
+    });
     this.ui = createReactClass({
         getInitialState(){
             this.vars = instance;
@@ -108,10 +144,12 @@ function Sample(args){
             var updateCarrierAmpState = this.updateCarrierAmpState;
             var updateModFreqState = this.updateModFreqState;
             var updateModAmpState = this.updateModAmpState;
+            var updateFilterFreqState = this.updateFilterFreqState;
             $('#carrierFreq'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateCarrierFreqState(e) }, onSlideEnd: function(p,e){updateCarrierFreqState(e) }});
             $('#carrierAmp'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateCarrierAmpState(e) }, onSlideEnd: function(p,e){updateCarrierAmpState(e) }});
             $('#modFreq'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateModFreqState(e) }, onSlideEnd: function(p,e){updateModFreqState(e) }});
             $('#modAmp'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateModAmpState(e) }, onSlideEnd: function(p,e){updateModAmpState(e) }});
+            $('#filterFreq'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateFilterFreqState(e) }, onSlideEnd: function(p,e){updateFilterFreqState(e) }});
         },
         updateCarrierFreqState(val){
             this.refs.carrierFreqSlider.updateState(val);
@@ -128,6 +166,10 @@ function Sample(args){
         updateModAmpState(val){
             this.refs.modAmpSlider.updateState(val);
             this.refs.modAmpDisplay.updateState(val);
+        },
+        updateFilterFreqState(val){
+            this.refs.filterFreqSlider.updateState(val);
+            this.refs.filterFreqDisplay.updateState(val);
         },
         render() {
             return React.createElement('div', {}, [
@@ -147,6 +189,10 @@ function Sample(args){
                 React.createElement('br', { key: 'br4' }),
                 React.createElement(this.vars.slider, { id: 'modAmp'+this.props.uniqId, key: 'slider4', ref: 'modAmpSlider', min: -150, max: 150, step: 1, defaultValue: this.vars.args.modulator.amp }),
                 React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.modulator.amp, key: 'value4', ref: 'modAmpDisplay' }),
+                React.createElement('br', { key: 'br5' }),
+                React.createElement(this.vars.filterSelect, { id: 'filterSelect'+this.props.uniqId, key: 'fselect1', defaultValue: this.vars.filter.type }),
+                React.createElement(this.vars.slider, { id: 'filterFreq'+this.props.uniqId, key: 'slider5', ref: 'filterFreqSlider', min: 10, max: 1000, step: 1, defaultValue: this.vars.args.filter.freq }),
+                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.filter.freq, key: 'value5', ref: 'filterFreqDisplay' })
             ]);
         }
     });
