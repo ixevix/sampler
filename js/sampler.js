@@ -97,9 +97,9 @@ function Sample(args){
             } else if ( compvalue === 'release' ) {
                 this.vars.envelope.setADSR( this.vars.envelope.aTime, this.vars.envelope.dTime, this.vars.envelope.dLevel, value );
             } else if ( compvalue === 'atkAmp' ) {
-                this.vars.envelope.setRange( value, this.vars.envelope.aLevel );
+                this.vars.envelope.setRange( value, this.vars.envelope.rLevel );
             } else if ( compvalue === 'relAmp' ) {
-                this.vars.envelope.setRange( this.vars.envelope.rLevel, value );
+                this.vars.envelope.setRange( this.vars.envelope.aLevel, value );
             } else if ( compvalue === 'envFreq' ) {
                 this.vars.envelope.freq = value;
             }
