@@ -1,6 +1,6 @@
 var SampleApp = {};
 var Samples = [];
-var React, ReactDOM, createReactClass, rangeslider, p5
+var React, ReactDOM, createReactClass, rangeslider, p5;
 
 requirejs.config({
     baseUrl: 'js/'
@@ -55,4 +55,3 @@ SampleApp.render = function(){
     }
     ReactDOM.render( React.createElement('div', {}, renderarray ), document.getElementById('root'));
 }
-
