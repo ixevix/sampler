@@ -24,6 +24,7 @@ function Sample(args){
     this.modulator.freq(args.modulator.freq);
     this.carrier.amp(args.carrier.amp);
     this.modulator.amp(args.modulator.amp);
+    this.filter.res(args.filter.res);
     this.modulator.start();
     this.modulator.disconnect();
     this.carrier.freq(this.modulator);
@@ -47,6 +48,8 @@ function Sample(args){
                 this.vars.modulator.amp(value);
             } else if ( compvalue === 'filterFreq' ) {
                 this.vars.filter.freq(value);
+            } else if ( compvalue === 'filterRes' ) {
+                this.vars.filter.res(value);
             }
         },
         changeHandler(){
@@ -81,7 +84,7 @@ function Sample(args){
             this.setState( {value: val} );
         },
         render(){
-            return React.createElement('span', {}, this.state.value );
+            return React.createElement('span', {}, this.props.desc + ': ' + this.state.value );
         }
     });
     this.waveformSelect = createReactClass({
@@ -145,11 +148,13 @@ function Sample(args){
             var updateModFreqState = this.updateModFreqState;
             var updateModAmpState = this.updateModAmpState;
             var updateFilterFreqState = this.updateFilterFreqState;
+            var updateFilterResState = this.updateFilterResState;
             $('#carrierFreq'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateCarrierFreqState(e) }, onSlideEnd: function(p,e){updateCarrierFreqState(e) }});
             $('#carrierAmp'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateCarrierAmpState(e) }, onSlideEnd: function(p,e){updateCarrierAmpState(e) }});
             $('#modFreq'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateModFreqState(e) }, onSlideEnd: function(p,e){updateModFreqState(e) }});
             $('#modAmp'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateModAmpState(e) }, onSlideEnd: function(p,e){updateModAmpState(e) }});
             $('#filterFreq'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateFilterFreqState(e) }, onSlideEnd: function(p,e){updateFilterFreqState(e) }});
+            $('#filterRes'+this.props.uniqId).rangeslider({polyfill: false, onSlide: function(p,e){updateFilterResState(e) }, onSlideEnd: function(p,e){updateFilterResState(e) }});
         },
         updateCarrierFreqState(val){
             this.refs.carrierFreqSlider.updateState(val);
@@ -171,6 +176,10 @@ function Sample(args){
             this.refs.filterFreqSlider.updateState(val);
             this.refs.filterFreqDisplay.updateState(val);
         },
+        updateFilterResState(val){
+            this.refs.filterResSlider.updateState(val);
+            this.refs.filterResDisplay.updateState(val);
+        },
         render() {
             return React.createElement('div', {}, [
                 React.createElement(this.vars.playButton, { defaultValue: 'Start', key: 'button1'} ),
@@ -178,21 +187,25 @@ function Sample(args){
                 React.createElement('br', { key: 'br1' }),
                 React.createElement(this.vars.waveformSelect, { id: 'carrierWaveForm'+this.props.uniqId, key: 'waveform1', ref: 'carrierWaveForm', defaultValue: this.vars.args.carrier.type }),
                 React.createElement(this.vars.slider, { id: 'carrierFreq'+this.props.uniqId, key: 'slider1', ref: 'carrierFreqSlider', min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq }),
-                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.carrier.freq, key: 'value1', ref: 'carrierFreqDisplay' }),
+                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.carrier.freq, key: 'value1', ref: 'carrierFreqDisplay', desc: 'carrier frequency' }),
                 React.createElement('br', { key: 'br2' }),
                 React.createElement(this.vars.slider, { id: 'carrierAmp'+this.props.uniqId, key: 'slider2', ref: 'carrierAmpSlider', min: 0, max: 1, step: 0.001, defaultValue: this.vars.args.carrier.amp }),
-                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.carrier.amp, key: 'value2', ref: 'carrierAmpDisplay' }),
+                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.carrier.amp, key: 'value2', ref: 'carrierAmpDisplay', desc: 'volume (carrier amplification)' }),
                 React.createElement('br', { key: 'br3' }),
                 React.createElement(this.vars.waveformSelect, { id: 'modWaveForm'+this.props.uniqId, key: 'waveform2', ref: 'carrierWaveForm', defaultValue: this.vars.args.modulator.type }),
                 React.createElement(this.vars.slider, { id: 'modFreq'+this.props.uniqId, key: 'slider3', ref: 'modFreqSlider', min: 0, max: 150, step: 1, defaultValue: this.vars.args.modulator.freq }),
-                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.modulator.freq, key: 'value3', ref: 'modFreqDisplay' }),
+                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.modulator.freq, key: 'value3', ref: 'modFreqDisplay', desc: 'modulator frequency' }),
                 React.createElement('br', { key: 'br4' }),
                 React.createElement(this.vars.slider, { id: 'modAmp'+this.props.uniqId, key: 'slider4', ref: 'modAmpSlider', min: -150, max: 150, step: 1, defaultValue: this.vars.args.modulator.amp }),
-                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.modulator.amp, key: 'value4', ref: 'modAmpDisplay' }),
+                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.modulator.amp, key: 'value4', ref: 'modAmpDisplay', desc: 'modulator amplification (times)' }),
                 React.createElement('br', { key: 'br5' }),
                 React.createElement(this.vars.filterSelect, { id: 'filterSelect'+this.props.uniqId, key: 'fselect1', defaultValue: this.vars.filter.type }),
                 React.createElement(this.vars.slider, { id: 'filterFreq'+this.props.uniqId, key: 'slider5', ref: 'filterFreqSlider', min: 10, max: 1000, step: 1, defaultValue: this.vars.args.filter.freq }),
-                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.filter.freq, key: 'value5', ref: 'filterFreqDisplay' })
+                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.filter.freq, key: 'value5', ref: 'filterFreqDisplay', desc: 'filter cutoff frequency' }),
+                React.createElement(this.vars.slider, { id: 'filterRes'+this.props.uniqId, key: 'slider6', ref: 'filterResSlider', min: 0, max: 1000, step: 1, defaultValue: this.vars.args.filter.res }),
+                React.createElement(this.vars.valueDisplay, { defaultValue: this.vars.args.filter.res, key: 'value6', ref: 'filterResDisplay', desc: 'filter resonance / bandpass frequency' }),
+                React.createElement('br', { key: 'lastbr1' }),
+                React.createElement('br', { key: 'lastbr2' })
             ]);
         }
     });
