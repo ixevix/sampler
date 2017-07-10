@@ -19,7 +19,6 @@ function Sample(args){
     this.modulator.freq(args.modulator.freq);
     this.carrier.amp(args.carrier.amp);
     this.modulator.amp(args.modulator.amp);
-    //this.carrier.start();
     this.modulator.start();
     this.modulator.disconnect();
     this.carrier.freq(this.modulator);
@@ -30,7 +29,7 @@ function Sample(args){
             return { value: this.props.defaultValue }
         },
         updateState(value){
-            var compvalue = this.props.id.substring(0,this.props.id.length - 1);
+            var compvalue = this.props.id.replace(/\d/g,'');
             if ( compvalue === 'carrierFreq' ) {
                 this.vars.carrier.freq(value);
             } else if ( compvalue === 'carrierAmp' ) {
@@ -82,7 +81,7 @@ function Sample(args){
             return { value: this.props.defaultValue };
         },
         updateState(e){
-            var compvalue = this.props.id.substring(0,this.props.id.length - 1);
+            var compvalue = this.props.id.replace(/\d/g,'');
             if ( compvalue === 'carrierWaveForm' ) {
                 this.vars.carrier.setType(e.target.value);
             } else if ( compvalue === 'modWaveForm' ) {
