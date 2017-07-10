@@ -131,18 +131,18 @@ function Sample(args){
     this.envelopeButton = createReactClass({
         getInitialState(){
             this.vars = instance;
-            return { envelop: this.props.defaultValue, origValue: this.vars.carrier.amp().value }
+            return { envelop: this.props.defaultValue }
         },
         clickHandler(){
             if ( this.state.envelop === 'Envelop' ) {
                 this.vars.envelope.playing = true;
-                this.setState({ envelop: 'Unenvelop', origValue: this.vars.carrier.amp().value });
+                this.setState({ envelop: 'Unenvelop' });
                 this.vars.carrier.amp(this.vars.envelope);
                 // loop envelope at envelope.freq
                 setTimeout(this.vars.loopEnvelope, this.vars.envelope.freq);
             } else if ( this.state.envelop === 'Unenvelop' ) {
                 this.vars.envelope.playing = false;
-                this.vars.carrier.amp(this.state.origValue);
+                this.vars.carrier.amp(this.props.getCarrierAmp());
                 this.setState({ envelop: 'Envelop' });
             }
         },
@@ -297,13 +297,16 @@ function Sample(args){
             this.refs.envFreqSlider.updateState(val);
             this.refs.envFreqDisplay.updateState(val);
         },
+        getCarrierAmp(){
+            return this.refs.carrierAmpSlider.state.value;
+        },
         render() {
             return React.createElement('div', {}, [
                 React.createElement(this.vars.playButton, { defaultValue: 'Start', key: 'button1'} ),
                 React.createElement('span', { key: 'separator0' }, ' '),
                 React.createElement(this.vars.deleteButton, { key: 'deletebutton' }),
                 React.createElement('span', { key: 'separator1' }, ' '),
-                React.createElement(this.vars.envelopeButton, { defaultValue: 'Envelop', key: 'envelopebutton' }),
+                React.createElement(this.vars.envelopeButton, { defaultValue: 'Envelop', key: 'envelopebutton', getCarrierAmp: this.getCarrierAmp }),
                 React.createElement('br', { key: 'br0' }),
                 React.createElement('br', { key: 'br1' }),
                 React.createElement(this.vars.waveformSelect, { id: 'carrierWaveForm'+this.props.uniqId, key: 'waveform1', ref: 'carrierWaveForm', defaultValue: this.vars.args.carrier.type }),
