@@ -211,6 +211,33 @@ function Sample(args){
             ]);
         }
     });
+    this.sequencerStep = createReactClass({
+        getInitialState(){
+            this.vars = instance;
+            return { value: this.props.defaultValue };
+        },
+        render(){
+            React.createElement(this.vars.slider, { id: this.props.id, uniqId: this.props.uniqId, min: this.props.min, max: this.props.max, step: this.props.step, defaultValue: this.props.defaultValue });
+        }
+    });
+    this.sequencer = createReactClass({
+        getInitialState(){
+            this.vars = instance;
+            return {};
+        },
+        render(){
+            return React.createElement('div', {}, [
+                React.createElement(this.vars.sequencerStep, { key: 'step1', id: 'seqStepOne'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq} ),
+                React.createElement(this.vars.sequencerStep, { key: 'step2', id: 'seqStepTwo'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq }),
+                React.createElement(this.vars.sequencerStep, { key: 'step3', id: 'seqStepThree'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq }),
+                React.createElement(this.vars.sequencerStep, { key: 'step4', id: 'seqStepFour'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq }),
+                React.createElement(this.vars.sequencerStep, { key: 'step5', id: 'seqStepFive'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq }),
+                React.createElement(this.vars.sequencerStep, { key: 'step6', id: 'seqStepSix'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq }),
+                React.createElement(this.vars.sequencerStep, { key: 'step7', id: 'seqStepSeven'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq }),
+                React.createElement(this.vars.sequencerStep, { key: 'step8', id: 'seqStepEight'+this.props.uniqId, uniqId: this.props.uniqId, min: 0, max: 1000, step: 1, defaultValue: this.vars.args.carrier.freq })
+            ])
+        }
+    });
     this.ui = createReactClass({
         getInitialState(){
             this.vars = instance;
